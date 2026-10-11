@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#ff4d5a">
 
     <title>MED-DECIDE | Emergency Decision Trainer</title>
 
+    <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="style.css">
 
     <!-- Leaflet CSS for Tactical Map -->
@@ -14,9 +16,11 @@
     <!-- html2pdf Bundle for Tactical AAR PDF Export -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
+    <!-- Chart.js for Tactical Telemetry Radar Visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 
@@ -80,8 +84,8 @@
 
                 <div class="hero-stats">
                     <div>
-                        <strong>04+</strong>
-                        <small>Emergency Scenarios</small>
+                        <strong>04</strong>
+                        <small>Disaster Scenarios</small>
                     </div>
 
                     <div>
@@ -411,6 +415,27 @@
                 </button>
             </div>
 
+            <!-- Scenario 4: Urban Earthquake Collapse (National Disaster) -->
+            <div class="scenario-card">
+                <div class="card-tag critical">NDRF / MASS DISASTER</div>
+                <div class="card-icon">🏚️</div>
+                <h3>Urban Structural Collapse</h3>
+                <p class="scenario-desc">
+                    Magnitude 6.8 seismic collapse of commercial high-rise. Heavy debris entrapment, dust inhalation, and absolute power grid/telecom obliteration.
+                </p>
+                
+                <div class="metric-list">
+                    <div><span>Casualties:</span> <strong>5 victims (Trapped)</strong></div>
+                    <div><span>Medical Team:</span> <strong>USAR / NDRF Unit</strong></div>
+                    <div><span>Ambulance:</span> <strong>1 Heavy Transport</strong></div>
+                    <div><span>Network:</span> <strong>100% Radio Blackout</strong></div>
+                </div>
+
+                <button class="launch-btn" onclick="selectScenario('earthquake_collapse')">
+                    Deploy Scenario →
+                </button>
+            </div>
+
         </div>
 
     </section>
@@ -545,6 +570,11 @@
                     <span>COMMS SURVIVAL</span>
                     <strong id="commsScoreVal">ADAPTIVE</strong>
                 </div>
+            </div>
+
+            <!-- Tactical Radar Proficiency Visualization -->
+            <div class="chart-container-box">
+                <canvas id="performanceChart"></canvas>
             </div>
 
             <!-- Patient Triage Audit Table -->

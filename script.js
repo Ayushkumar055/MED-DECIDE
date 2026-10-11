@@ -1,14 +1,24 @@
 /* ========================================================
-   MED-DECIDE: Emergency Decision-Making Engine
-   Supports: 3 Scenarios, Leaflet GPS Maps, START Triage, 
+   MED-DECIDE: Autonomous Emergency Decision Engine
+   Supports: 4 Scenarios, Leaflet GPS Maps, START Triage, 
    Degraded Comms, Ambulance Logistics, Tactical SFX, 
-   Call-Signs, Gemini AI, Neon DB & PDF Reports
+   Call-Signs, Gemini AI, Neon DB, Chart.js & PWA Service Worker
    ======================================================== */
 
 // Global App State
 let isMuted = false;
 let currentResponder = "Cadet Responder";
 let pendingScenarioKey = null;
+let performanceRadarChart = null;
+
+// PWA Service Worker Registration
+if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+        navigator.serviceWorker.register("/sw.js").catch(err => {
+            console.log("ServiceWorker registration optional/failed:", err);
+        });
+    });
+}
 
 /* ================= TACTICAL SYNTH AUDIO ENGINE ================= */
 class TacticalAudio {
@@ -26,7 +36,6 @@ class TacticalAudio {
         }
     }
 
-    // 1. Military Push-to-Talk Radio Chirp
     playRadioChirp() {
         if (isMuted) return;
         try {
@@ -52,7 +61,6 @@ class TacticalAudio {
         }
     }
 
-    // 2. White Noise VHF Radio Static Burst
     playRadioStatic(duration = 0.4) {
         if (isMuted) return;
         try {
@@ -87,7 +95,6 @@ class TacticalAudio {
         }
     }
 
-    // 3. Clinical ECG Heart Monitor Beep
     playHeartBeep(isCritical = false) {
         if (isMuted) return;
         try {
@@ -115,7 +122,6 @@ class TacticalAudio {
         }
     }
 
-    // 4. Emergency Klaxon / Siren Warning
     playEmergencySiren() {
         if (isMuted) return;
         try {
@@ -172,15 +178,21 @@ const SCENARIO_COORDS = {
         accident: [22.8100, 86.2200],
         hospital: [22.8250, 86.2300],
         name: "Central Railway Terminal Gate 2"
+    },
+    earthquake_collapse: {
+        center: [22.8010, 86.1900],
+        accident: [22.8010, 86.1900],
+        hospital: [22.8150, 86.2050],
+        name: "Metro Commercial Complex (NDRF Zone 1)"
     }
 };
 
-// Master Scenario Database
+// Master Scenario Database (4 High-Impact Scenarios)
 const SCENARIO_DATA = {
     road_accident: {
         title: "Road Accident: Multi-Vehicle Pile-up",
         subtitle: "Active Disaster Zone | Triage & Transport Phase",
-        duration: 480, // 8 minutes
+        duration: 480,
         ambulancesAvailable: 1,
         maxAmbulanceSlots: 2,
         patients: [
@@ -247,7 +259,7 @@ const SCENARIO_DATA = {
     factory_fire: {
         title: "Industrial Chemical Fire & Inhalation",
         subtitle: "Hazardous Chemical Zone | Toxic Smoke Inhalation",
-        duration: 360, // 6 minutes
+        duration: 360,
         ambulancesAvailable: 2,
         maxAmbulanceSlots: 2,
         patients: [
@@ -314,7 +326,7 @@ const SCENARIO_DATA = {
     stampede: {
         title: "Transit Hub Stampede Surge",
         subtitle: "Severe Mass Casualty Incident | Autonomous Triage Protocol",
-        duration: 300, // 5 minutes
+        duration: 300,
         ambulancesAvailable: 3,
         maxAmbulanceSlots: 2,
         patients: [
@@ -376,6 +388,73 @@ const SCENARIO_DATA = {
         ],
         criticalPatientIds: ["ST-301", "ST-302"],
         initialDispatchLog: "CRITICAL: Severe overcrowding collapse at Terminal Gates. Cellular repeaters congested. Responders in full blackout."
+    },
+
+    earthquake_collapse: {
+        title: "Urban Structural Collapse (NDRF Grid)",
+        subtitle: "Massive Earthquake Disaster | Heavy Entrapment & Zero Grid",
+        duration: 420,
+        ambulancesAvailable: 1,
+        maxAmbulanceSlots: 2,
+        patients: [
+            {
+                id: "EQ-401",
+                age: "39M",
+                injury: "Crush syndrome bilateral lower limbs > 4 hours, dark urine, extreme tachycardia, cold peripheries",
+                respiration: "34 /min",
+                pulse: "Rapid / Thready (146 bpm)",
+                mental: "Confused, screaming in shock",
+                capillaryRefill: "3.8 sec",
+                correctTriage: "RED",
+                currentTag: null
+            },
+            {
+                id: "EQ-402",
+                age: "24F",
+                injury: "Penetrating abdominal rebar injury with active localized bleed, hemodynamically unstable",
+                respiration: "32 /min",
+                pulse: "Weak radial (132 bpm)",
+                mental: "Lethargic",
+                capillaryRefill: "> 2 sec",
+                correctTriage: "RED",
+                currentTag: null
+            },
+            {
+                id: "EQ-403",
+                age: "58F",
+                injury: "Closed clavicle fracture and non-critical dust inhalation, fully ambulatory",
+                respiration: "20 /min",
+                pulse: "Regular (84 bpm)",
+                mental: "Alert and conversational",
+                capillaryRefill: "< 2 sec",
+                correctTriage: "GREEN",
+                currentTag: null
+            },
+            {
+                id: "EQ-404",
+                age: "45M",
+                injury: "Decapitating concrete slab crushing trauma, profound apnea, non-responsive",
+                respiration: "0 /min",
+                pulse: "Absent",
+                mental: "Unresponsive / Dead on arrival",
+                capillaryRefill: "Absent",
+                correctTriage: "BLACK",
+                currentTag: null
+            },
+            {
+                id: "EQ-405",
+                age: "31M",
+                injury: "Displaced pelvic fracture without signs of hypovolemia, immobilized on spine board",
+                respiration: "22 /min",
+                pulse: "Strong (88 bpm)",
+                mental: "Alert, oriented x 3",
+                capillaryRefill: "< 2 sec",
+                correctTriage: "YELLOW",
+                currentTag: null
+            }
+        ],
+        criticalPatientIds: ["EQ-401", "EQ-402"],
+        initialDispatchLog: "NDRF DISPATCH: Multi-story collapse. Electrical grid down. Telecommunications infrastructure 100% neutralized."
     }
 };
 
@@ -490,16 +569,13 @@ function initLeafletMap(scenarioKey) {
             maxZoom: 16
         }).addTo(mapInstance);
 
-        // Accident Zone Pin
         L.marker(coords.accident).addTo(mapInstance)
-            .bindPopup(`<b>🚨 Incident Zone</b><br>${coords.name}`)
+            .bindPopup(`<b>🚨 Incident Epicenter</b><br>${coords.name}`)
             .openPopup();
 
-        // Receiving Hospital Pin
         L.marker(coords.hospital).addTo(mapInstance)
             .bindPopup("<b>🏥 Trauma Center</b><br>Receiving Facility");
 
-        // Evacuation Line
         L.polyline([coords.accident, coords.hospital], {
             color: '#ff4d5a',
             weight: 3,
@@ -532,9 +608,9 @@ function initSimulation() {
     document.getElementById("simSceneSubtitle").innerText = `${activeScenario.subtitle} | Operator: [${currentResponder}]`;
     document.getElementById("ambulanceCount").innerText = `${activeScenario.ambulancesAvailable} Available`;
 
-    if (activeScenarioKey === "stampede") {
+    if (activeScenarioKey === "stampede" || activeScenarioKey === "earthquake_collapse") {
         currentNetwork = 0;
-        degradeComms(0, "⚡ IMMEDIATE BLACKOUT: Cell tower congested. Remote telemedicine completely offline.");
+        degradeComms(0, "⚡ TOTAL BLACKOUT: Power grid down. Responders in full radio isolation.");
     } else if (activeScenarioKey === "factory_fire") {
         currentNetwork = 60;
         degradeComms(60, "Industrial interference detected. Concrete shielding causes packet delays.");
@@ -676,6 +752,10 @@ function startMissionTimer() {
             } else if (timerSeconds === 90) {
                 degradeComms(5, "⚡ Signal collapsed. No base response.");
             }
+        } else if (activeScenarioKey === "earthquake_collapse") {
+            if (timerSeconds === 300) {
+                degradeComms(0, "⚠️ USAR Team Alert: Secondary aftershock tremor detected.");
+            }
         }
 
         if (timerSeconds <= 0) {
@@ -814,10 +894,78 @@ async function evaluateDecisions() {
         badge.style.color = "#ff4d5a";
     }
 
+    renderRadarChart(triageScore, transportScore, overallScore);
     document.getElementById("resultModal").style.display = "flex";
 
     const aiFeedback = await generateAiDebrief(triageCorrectCount, criticalEvacuated, overallScore);
     await saveMissionToNeon(aiFeedback, overallScore, triageCorrectCount, criticalEvacuated, timeUsedFormatted);
+}
+
+/* ================= TACTICAL RADAR VISUALIZATION ================= */
+function renderRadarChart(triageScore, transportScore, overallScore) {
+    const ctx = document.getElementById("performanceChart");
+    if (!ctx) return;
+
+    if (performanceRadarChart) {
+        performanceRadarChart.destroy();
+    }
+
+    const commsIndex = currentNetwork <= 20 ? 95 : (currentNetwork <= 60 ? 80 : 70);
+    const timeRatio = Math.max(0, 100 - Math.round(((activeScenario.duration - timerSeconds) / activeScenario.duration) * 100));
+
+    performanceRadarChart = new Chart(ctx, {
+        type: 'radar',
+        data: {
+            labels: [
+                'Triage Accuracy', 
+                'Evacuation Priority', 
+                'Comms Adaptability', 
+                'Time Conservation'
+            ],
+            datasets: [{
+                label: 'Operator Proficiency Index',
+                data: [
+                    Math.round(triageScore), 
+                    Math.round(transportScore), 
+                    commsIndex, 
+                    timeRatio
+                ],
+                fill: true,
+                backgroundColor: 'rgba(56, 217, 150, 0.2)',
+                borderColor: '#38d996',
+                pointBackgroundColor: '#ff4d5a',
+                pointBorderColor: '#fff',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: '#ff4d5a'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                r: {
+                    angleLines: { color: 'rgba(255, 255, 255, 0.1)' },
+                    grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                    pointLabels: {
+                        color: '#9cb1b7',
+                        font: { size: 10, family: 'Inter' }
+                    },
+                    ticks: {
+                        backdropColor: 'transparent',
+                        color: '#657d84',
+                        stepSize: 25
+                    },
+                    suggestedMin: 0,
+                    suggestedMax: 100
+                }
+            },
+            plugins: {
+                legend: {
+                    labels: { color: '#e5ecee', font: { family: 'Inter', size: 11 } }
+                }
+            }
+        }
+    });
 }
 
 async function generateAiDebrief(correctTriage, criticalEvacuated, overallScore) {
@@ -866,7 +1014,7 @@ async function generateAiDebrief(correctTriage, criticalEvacuated, overallScore)
     return generatedText;
 }
 
-// Save Mission to Neon Postgres with Custom Responder Tag
+// Save Mission to Neon Postgres
 async function saveMissionToNeon(aiFeedbackText, overallScore, triageCorrectCount, criticalEvacuated, elapsedStr) {
     try {
         const evacStatus = criticalEvacuated === activeScenario.criticalPatientIds.length 
@@ -889,7 +1037,6 @@ async function saveMissionToNeon(aiFeedbackText, overallScore, triageCorrectCoun
 
         const data = await res.json();
         if (data.success) {
-            console.log("💾 Mission successfully saved in Neon DB. Mission ID:", data.missionId);
             fetchLeaderboard();
         }
     } catch (err) {
@@ -903,16 +1050,13 @@ function retryScenario() {
 }
 
 /* ================= LIVE LEADERBOARD ENGINE ================= */
-
 async function fetchLeaderboard() {
     const tbody = document.getElementById("leaderboardBody");
     if (!tbody) return;
 
     try {
         const res = await fetch("/api/leaderboard");
-        if (!res.ok) {
-            throw new Error(`Server returned status ${res.status}`);
-        }
+        if (!res.ok) throw new Error(`Server returned status ${res.status}`);
 
         const data = await res.json();
 
@@ -942,7 +1086,7 @@ async function fetchLeaderboard() {
         });
     } catch (err) {
         console.warn("Failed to load leaderboard:", err);
-        tbody.innerHTML = `<tr><td colspan="6" class="loading-state">⚠️ Offline: Could not sync with database.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="6" class="loading-state">⚠️ Offline: Running in local cached mode.</td></tr>`;
     }
 }
 
@@ -992,6 +1136,5 @@ function downloadIncidentReportPDF() {
 }
 
 fetchLeaderboard();
-
 document.addEventListener("DOMContentLoaded", fetchLeaderboard);
 window.addEventListener("load", fetchLeaderboard);
