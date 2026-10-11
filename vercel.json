@@ -31,7 +31,7 @@
       "handle": "filesystem"
     },
     {
-      "src": "/(.*)",
+      "src": "/((?!.*\\.(?:css|js|json|png|jpg|svg|ico)).*)",
       "dest": "/index.html"
     }
   ]
