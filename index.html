@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>MED-DECIDE | Emergency Decision Trainer</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Leaflet CSS for Tactical Map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+    <!-- Global Navigation -->
+    <header class="navbar">
+        <div class="logo">
+            <span class="logo-icon">✚</span>
+            <span>MED<span>-DECIDE</span></span>
+        </div>
+
+        <nav id="mainNav">
+            <a href="#home" onclick="returnToHome()">Home</a>
+            <a href="#features">Features</a>
+            <a href="#how-it-works">How It Works</a>
+            <a href="#leaderboardSection">Leaderboard</a>
+        </nav>
+
+        <button class="nav-btn" onclick="startTraining()">
+            Start Training
+        </button>
+    </header>
+
+
+    <!-- Screen 1: Landing Page -->
+    <main id="home">
+
+        <!-- Hero Section -->
+        <section class="hero">
+
+            <div class="hero-content">
+
+                <div class="status">
+                    <span class="status-dot"></span>
+                    Emergency Training Platform
+                </div>
+
+                <h1>
+                    Train to Make the
+                    <span>Right Decision</span>
+                    When Every Second Matters.
+                </h1>
+
+                <p>
+                    An immersive medical emergency decision-making simulator
+                    designed to train responders in situations where
+                    communication is weak, delayed, or completely unavailable.
+                </p>
+
+                <div class="hero-buttons">
+                    <button class="primary-btn" onclick="startTraining()">
+                        Start Training
+                        <span>→</span>
+                    </button>
+
+                    <button class="secondary-btn" onclick="scrollToFeatures()">
+                        Explore Platform
+                    </button>
+                </div>
+
+                <div class="hero-stats">
+                    <div>
+                        <strong>04+</strong>
+                        <small>Emergency Scenarios</small>
+                    </div>
+
+                    <div>
+                        <strong>Real-Time</strong>
+                        <small>Decision Simulation</small>
+                    </div>
+
+                    <div>
+                        <strong>AI</strong>
+                        <small>Performance Evaluation</small>
+                    </div>
+                </div>
+
+            </div>
+
+
+            <!-- Simulation Preview Card -->
+            <div class="hero-visual">
+
+                <div class="simulation-card">
+
+                    <div class="card-header">
+                        <div>
+                            <small>LIVE SIMULATION</small>
+                            <h3>Road Accident</h3>
+                        </div>
+
+                        <div class="live">
+                            <span></span> LIVE
+                        </div>
+                    </div>
+
+                    <div class="emergency-map">
+
+                        <div class="map-grid"></div>
+
+                        <div class="location accident">📍</div>
+                        <div class="location hospital">🏥</div>
+                        <div class="location ambulance">🚑</div>
+
+                        <div class="route"></div>
+
+                        <div class="map-label accident-label">
+                            Accident
+                        </div>
+
+                        <div class="map-label hospital-label">
+                            Hospital
+                        </div>
+
+                    </div>
+
+                    <div class="simulation-info">
+
+                        <div class="info-box">
+                            <span>CASUALTIES</span>
+                            <strong>05</strong>
+                        </div>
+
+                        <div class="info-box">
+                            <span>COMMUNICATION</span>
+                            <strong class="warning">40%</strong>
+                        </div>
+
+                        <div class="info-box">
+                            <span>TIME LEFT</span>
+                            <strong>06:42</strong>
+                        </div>
+
+                    </div>
+
+                    <div class="communication">
+                        <div class="comm-title">
+                            <span>📡 Communication Status</span>
+                            <strong>WEAK</strong>
+                        </div>
+
+                        <div class="progress">
+                            <div></div>
+                        </div>
+
+                        <p>
+                            Some messages may be delayed or unavailable.
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- Features Section -->
+        <section class="features" id="features">
+
+            <div class="section-heading">
+                <span>CORE CAPABILITIES</span>
+                <h2>Built for Critical Decisions</h2>
+                <p>
+                    Experience realistic emergency scenarios where
+                    communication and resources are limited.
+                </p>
+            </div>
+
+            <div class="feature-grid">
+
+                <div class="feature-card">
+                    <div class="feature-icon">🚨</div>
+                    <h3>Emergency Scenarios</h3>
+                    <p>
+                        Practice decision-making across realistic
+                        medical emergency situations.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">📡</div>
+                    <h3>Degraded Communication</h3>
+                    <p>
+                        Experience weak, delayed and completely
+                        unavailable communication.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🧠</div>
+                    <h3>Decision Making</h3>
+                    <p>
+                        Make time-critical decisions while managing
+                        limited resources.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🤖</div>
+                    <h3>AI Evaluation</h3>
+                    <p>
+                        Receive intelligent feedback on your decisions,
+                        performance and response time.
+                    </p>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- How It Works Section -->
+        <section class="how-it-works" id="how-it-works">
+
+            <div class="section-heading">
+                <span>TRAINING PROCESS</span>
+                <h2>How It Works</h2>
+            </div>
+
+            <div class="steps">
+
+                <div class="step">
+                    <div class="step-number">01</div>
+                    <h3>Select Scenario</h3>
+                    <p>
+                        Choose a medical emergency situation
+                        and difficulty level.
+                    </p>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">02</div>
+                    <h3>Make Decisions</h3>
+                    <p>
+                        Analyse patients, resources and
+                        the changing situation.
+                    </p>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">03</div>
+                    <h3>Communication Degrades</h3>
+                    <p>
+                        Handle the emergency when communication
+                        becomes unreliable.
+                    </p>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">04</div>
+                    <h3>Get Evaluated</h3>
+                    <p>
+                        Receive your score and AI-powered
+                        performance feedback.
+                    </p>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- Tactical Leaderboard Section -->
+        <section id="leaderboardSection" class="leaderboard-section">
+            <div class="section-heading">
+                <span>FIELD REGISTRY</span>
+                <h2>Top Tactical First Responders</h2>
+                <p>Live telemetry synced directly from Neon Postgres</p>
+            </div>
+
+            <div class="leaderboard-wrapper">
+                <table class="tactical-table">
+                    <thead>
+                        <tr>
+                            <th>RANK</th>
+                            <th>RESPONDER</th>
+                            <th>SCENARIO</th>
+                            <th>ACCURACY</th>
+                            <th>TIME</th>
+                            <th>SCORE</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboardBody">
+                        <tr>
+                            <td colspan="6" class="loading-state">Syncing secure telemetry from Neon DB...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+
+        <!-- Call to Action -->
+        <section class="cta">
+
+            <div>
+                <span>READY FOR THE CHALLENGE?</span>
+
+                <h2>
+                    Can You Make the Right
+                    Decision Under Pressure?
+                </h2>
+
+                <p>
+                    Start your emergency decision-making training.
+                </p>
+            </div>
+
+            <button class="primary-btn" onclick="startTraining()">
+                Start Training →
+            </button>
+
+        </section>
+
+    </main>
+
+
+    <!-- Screen 2: Scenario Selection Section -->
+    <section id="scenarios" class="scenario-section" style="display: none;">
+        
+        <div class="scenario-header">
+            <button class="back-link" onclick="returnToHome()">← Back to Overview</button>
+            <span class="sub-badge">SIMULATION DISPATCH</span>
+            <h2>Select Emergency Scenario</h2>
+            <p>Pick a tactical situation to test triage accuracy, priority management, and degraded communication response.</p>
+        </div>
+
+        <div class="scenario-grid">
+            
+            <!-- Scenario 1: Highway Crash -->
+            <div class="scenario-card">
+                <div class="card-tag moderate">MODERATE DIFFICULTY</div>
+                <div class="card-icon">🚨</div>
+                <h3>Road Accident: Multi-Vehicle Pile-up</h3>
+                <p class="scenario-desc">
+                    Collision involving a passenger bus and two cars. Fuel leak reported. Medical triage must be executed before mobile network attenuates.
+                </p>
+                
+                <div class="metric-list">
+                    <div><span>Casualties:</span> <strong>5 victims</strong></div>
+                    <div><span>Medical Team:</span> <strong>2 Responders</strong></div>
+                    <div><span>Ambulance:</span> <strong>1 on scene</strong></div>
+                    <div><span>Network:</span> <strong>Degrades to 10%</strong></div>
+                </div>
+
+                <button class="launch-btn" onclick="selectScenario('road_accident')">
+                    Deploy Scenario →
+                </button>
+            </div>
+
+            <!-- Scenario 2: Chemical Plant Fire -->
+            <div class="scenario-card">
+                <div class="card-tag high">HIGH HAZARD</div>
+                <div class="card-icon">🏭</div>
+                <h3>Industrial Chemical Fire</h3>
+                <p class="scenario-desc">
+                    Structural warehouse fire with toxic fume release. High chance of respiratory failure. Thick concrete walls causing severe radio packet drops.
+                </p>
+                
+                <div class="metric-list">
+                    <div><span>Casualties:</span> <strong>5 victims (Hazmat)</strong></div>
+                    <div><span>Medical Team:</span> <strong>3 Responders</strong></div>
+                    <div><span>Ambulance:</span> <strong>2 dispatched</strong></div>
+                    <div><span>Network:</span> <strong>Heavy packet drop</strong></div>
+                </div>
+
+                <button class="launch-btn" onclick="selectScenario('factory_fire')">
+                    Deploy Scenario →
+                </button>
+            </div>
+
+            <!-- Scenario 3: Stampede Surge -->
+            <div class="scenario-card">
+                <div class="card-tag critical">CRITICAL MASS</div>
+                <div class="card-icon">⚡</div>
+                <h3>Transit Hub Stampede</h3>
+                <p class="scenario-desc">
+                    Overcrowding surge at a railway terminal. Multiple blunt traumas and asphyxiation cases. Tower overload leads to zero remote telemedicine.
+                </p>
+                
+                <div class="metric-list">
+                    <div><span>Casualties:</span> <strong>5 victims (Surge)</strong></div>
+                    <div><span>Medical Team:</span> <strong>4 Responders</strong></div>
+                    <div><span>Ambulance:</span> <strong>3 en route</strong></div>
+                    <div><span>Network:</span> <strong>Zero signal (Offline)</strong></div>
+                </div>
+
+                <button class="launch-btn" onclick="selectScenario('stampede')">
+                    Deploy Scenario →
+                </button>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- Screen 3: Emergency Simulation Room -->
+    <section id="simulation-room" class="sim-room" style="display: none;">
+        
+        <!-- Tactical Top Bar -->
+        <div class="sim-topbar">
+            <div class="sim-title-group">
+                <span class="pulse-indicator"></span>
+                <div>
+                    <h2 id="simSceneTitle">Road Accident: Multi-Vehicle Pile-up</h2>
+                    <small id="simSceneSubtitle">Active Disaster Zone | Triage & Transport Phase</small>
+                </div>
+            </div>
+
+            <div class="sim-telemetry">
+                <div class="telemetry-item">
+                    <span>MISSION TIME</span>
+                    <strong id="simTimer">08:00</strong>
+                </div>
+                <div class="telemetry-item">
+                    <span>COMMS UPLINK</span>
+                    <strong id="commPercent" class="status-green">100%</strong>
+                </div>
+                <div class="telemetry-item">
+                    <span>AMBULANCES</span>
+                    <strong id="ambulanceCount">1 Available</strong>
+                </div>
+                <button id="audioToggleBtn" class="audio-btn" onclick="toggleAudio()" title="Toggle Tactical Audio">🔊</button>
+                <button class="abort-btn" onclick="abortSimulation()">Abort Mission</button>
+            </div>
+        </div>
+
+        <!-- Network Degradation Banner -->
+        <div id="networkAlert" class="network-banner normal">
+            <span id="commIcon">📡</span>
+            <span id="commStatusText">Uplink Stable (100% Signal) — Tele-dispatch connected to Trauma Center</span>
+        </div>
+
+        <!-- Simulation Grid Layout -->
+        <div class="sim-grid">
+            
+            <!-- Left Column: Patient Triage Deck -->
+            <div class="patient-deck">
+                <div class="deck-header">
+                    <h3>Victim Triage Deck (<span id="triagedCount">0</span>/5 Assessed)</h3>
+                    <p>Evaluate vitals and assign Standard START Triage tags before allocating transport.</p>
+                </div>
+
+                <div class="patient-cards-container" id="patientCardsContainer">
+                    <!-- Injected dynamically via script.js -->
+                </div>
+            </div>
+
+            <!-- Right Column: Map, Radio Comms & Dispatch Controller -->
+            <div class="sim-sidebar">
+
+                <!-- Tactical Leaflet GPS Map -->
+                <div class="map-widget-container">
+                    <div class="map-widget-header">
+                        <span>📍 TACTICAL INCIDENT MAP</span>
+                        <span class="gps-coords" id="gpsCoords">22.8046° N, 86.2029° E</span>
+                    </div>
+                    <div id="simMap" class="real-sim-map"></div>
+                </div>
+                
+                <!-- Radio Box -->
+                <div class="radio-box">
+                    <div class="radio-header">
+                        <span>📟 DISPATCH RADIO LOG</span>
+                        <span class="freq-tag">FREQ 142.85 MHz</span>
+                    </div>
+                    <div class="radio-logs" id="radioLogs">
+                        <div class="log-entry system-log">
+                            <span class="log-time">[00:00]</span> <strong>DISPATCH:</strong> Initial dispatch confirmed. Tele-support uplink active.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ambulance Bay -->
+                <div class="dispatch-bay">
+                    <h3>🚑 Ambulance Load Bay</h3>
+                    <p>Vehicle capacity: <strong>Max 2-3 Stretcher Casualties</strong></p>
+                    <div class="ambulance-slots" id="ambulanceSlots">
+                        <div class="slot-empty" id="slot1">Empty Stretcher Slot 1</div>
+                        <div class="slot-empty" id="slot2">Empty Stretcher Slot 2</div>
+                    </div>
+                    
+                    <button class="primary-btn dispatch-action-btn" id="finishMissionBtn" onclick="evaluateDecisions()">
+                        Finalize Triage & Dispatch Transport →
+                    </button>
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- Screen 4: AI Performance Scorecard Modal -->
+    <div id="resultModal" class="modal-overlay" style="display: none;">
+        <div class="result-card">
+            
+            <div class="result-header">
+                <div class="badge-row">
+                    <span class="score-badge" id="gradeBadge">SURVIVAL RATING: A</span>
+                    <span class="time-stamp" id="missionDuration">Time Used: 03:15</span>
+                </div>
+                <h2>Mission Debrief & Tactical Audit</h2>
+                <p>AI-assisted evaluation based on Emergency Mass Casualty & START Triage standards.</p>
+            </div>
+
+            <!-- Score Summary Cards -->
+            <div class="score-metrics-grid">
+                <div class="metric-card">
+                    <span>OVERALL SCORE</span>
+                    <strong id="finalScoreVal">85%</strong>
+                </div>
+                <div class="metric-card">
+                    <span>TRIAGE ACCURACY</span>
+                    <strong id="triageScoreVal">4 / 5</strong>
+                </div>
+                <div class="metric-card">
+                    <span>EVAC PRIORITY</span>
+                    <strong id="evacScoreVal">OPTIMAL</strong>
+                </div>
+                <div class="metric-card">
+                    <span>COMMS SURVIVAL</span>
+                    <strong id="commsScoreVal">ADAPTIVE</strong>
+                </div>
+            </div>
+
+            <!-- Patient Triage Audit Table -->
+            <div class="audit-section">
+                <h3>Patient Assessment Audit</h3>
+                <div class="table-wrapper">
+                    <table class="audit-table">
+                        <thead>
+                            <tr>
+                                <th>Patient</th>
+                                <th>Key Condition</th>
+                                <th>Your Tag</th>
+                                <th>Standard Tag</th>
+                                <th>Transported?</th>
+                            </tr>
+                        </thead>
+                        <tbody id="auditTableBody">
+                            <!-- Injected dynamically via script.js -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- AI Debrief Box -->
+            <div class="ai-feedback-box">
+                <div class="ai-box-header">
+                    <span>🤖 GEMINI AI MEDICAL CONTROLLER AUDIT</span>
+                    <small>Real-time Heuristic Analysis</small>
+                </div>
+                <div class="ai-content" id="aiFeedbackText">
+                    Analyzing triage decisions and golden hour protocols...
+                </div>
+            </div>
+
+            <!-- Modal Action Buttons -->
+            <div class="modal-actions">
+                <button class="secondary-btn" onclick="retryScenario()">Retry Mission ↺</button>
+                <button class="primary-btn" onclick="returnToHome()">Back to Mission Hub →</button>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- Screen 5: Responder Call-Sign Modal -->
+    <div id="callsignModal" class="modal-overlay" style="display: none;">
+        <div class="result-card callsign-card">
+            <div class="result-header">
+                <span class="score-badge">DISPATCH AUTHORIZATION</span>
+                <h2>Enter Responder Call-Sign</h2>
+                <p>Identify your tactical operator tag for mission telemetry and Neon DB leaderboard logging.</p>
+            </div>
+            <div class="callsign-input-wrapper">
+                <input type="text" id="responderCallsignInput" placeholder="e.g. VIPER-01" maxlength="20" autocomplete="off" />
+                <button class="primary-btn" onclick="confirmDeployment()">Authorize & Deploy →</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Global Footer -->
+    <footer>
+        <div class="logo">
+            <span class="logo-icon">✚</span>
+            <span>MED<span>-DECIDE</span></span>
+        </div>
+        <p>Immersive Medical Emergency Decision-Making Trainer</p>
+        <p class="copyright">© 2026 MED-DECIDE. Training & Simulation Platform.</p>
+    </footer>
+
+    <!-- Leaflet JS CDN -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <!-- Main Logic Script -->
+    <script src="script.js"></script>
+
+</body>
+</html>
