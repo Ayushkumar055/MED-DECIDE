@@ -2,7 +2,7 @@
    MED-DECIDE: Emergency Decision-Making Engine
    Supports: 3 Scenarios, Leaflet GPS Maps, START Triage, 
    Degraded Comms, Ambulance Logistics, Tactical SFX, 
-   Call-Signs, Gemini AI & Neon DB
+   Call-Signs, Gemini AI, Neon DB & PDF Reports
    ======================================================== */
 
 // Global App State
@@ -440,7 +440,6 @@ function selectScenario(scenarioKey) {
     sfx.playRadioChirp();
     pendingScenarioKey = scenarioKey;
     
-    // Open call-sign input modal first
     document.getElementById("callsignModal").style.display = "flex";
     const input = document.getElementById("responderCallsignInput");
     if (input) {
@@ -945,6 +944,51 @@ async function fetchLeaderboard() {
         console.warn("Failed to load leaderboard:", err);
         tbody.innerHTML = `<tr><td colspan="6" class="loading-state">⚠️ Offline: Could not sync with database.</td></tr>`;
     }
+}
+
+/* ================= TACTICAL PDF REPORT GENERATOR ================= */
+function downloadIncidentReportPDF() {
+    sfx.playRadioChirp();
+
+    const resultCard = document.querySelector(".result-card");
+    const actions = document.querySelector(".modal-actions");
+    const exportBtn = document.getElementById("exportPdfBtn");
+
+    if (!resultCard) return;
+
+    if (exportBtn) {
+        exportBtn.innerText = "⏳ Generating Report...";
+        exportBtn.style.opacity = "0.7";
+    }
+
+    const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+    const filename = `MED-DECIDE_AAR_${currentResponder}_${timestamp.substring(0, 19)}.pdf`;
+
+    const opt = {
+        margin:       [8, 8, 8, 8],
+        filename:     filename,
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2, useCORS: true, backgroundColor: '#09151a' },
+        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+
+    if (actions) actions.style.display = "none";
+
+    html2pdf().set(opt).from(resultCard).save().then(() => {
+        if (actions) actions.style.display = "flex";
+        if (exportBtn) {
+            exportBtn.innerText = "📄 Export Mission Report (PDF)";
+            exportBtn.style.opacity = "1";
+        }
+    }).catch(err => {
+        console.error("PDF generation failed:", err);
+        if (actions) actions.style.display = "flex";
+        if (exportBtn) {
+            exportBtn.innerText = "📄 Export Mission Report (PDF)";
+            exportBtn.style.opacity = "1";
+        }
+        alert("Failed to export PDF report. Please verify browser permissions.");
+    });
 }
 
 fetchLeaderboard();

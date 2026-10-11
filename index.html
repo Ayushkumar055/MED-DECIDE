@@ -11,6 +11,9 @@
     <!-- Leaflet CSS for Tactical Map -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
+    <!-- html2pdf Bundle for Tactical AAR PDF Export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
@@ -579,6 +582,7 @@
             <!-- Modal Action Buttons -->
             <div class="modal-actions">
                 <button class="secondary-btn" onclick="retryScenario()">Retry Mission ↺</button>
+                <button class="secondary-btn export-pdf-btn" id="exportPdfBtn" onclick="downloadIncidentReportPDF()">📄 Export Mission Report (PDF)</button>
                 <button class="primary-btn" onclick="returnToHome()">Back to Mission Hub →</button>
             </div>
 

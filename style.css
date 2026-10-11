@@ -1522,6 +1522,22 @@ footer .logo {
     gap: 12px;
 }
 
+/* PDF Export Button Styling */
+.export-pdf-btn {
+    border-color: #38d996;
+    color: #38d996;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 700;
+}
+
+.export-pdf-btn:hover {
+    background: rgba(56, 217, 150, 0.15);
+    border-color: #38d996;
+    color: #fff;
+}
+
 /* Call-Sign Modal */
 .callsign-card {
     max-width: 480px;
